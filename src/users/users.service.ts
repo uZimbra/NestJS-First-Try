@@ -29,12 +29,12 @@ export class UsersService {
     }
   }
 
-  findAll() {
-    return this.userModel.find();
+  findOne(email: string) {
+    return this.userModel.findOne({ email });
   }
 
-  findOne(id: string) {
-    return this.userModel.findById(id);
+  findAll() {
+    return this.userModel.find();
   }
 
   update(id: string, updateUserDto: UpdateUserDto) {

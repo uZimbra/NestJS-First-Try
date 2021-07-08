@@ -6,11 +6,15 @@ import {
   Patch,
   Param,
   Delete,
+  UseGuards,
+  Request,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { AuthGuard } from '@nestjs/passport';
 
+type FindOneBodyParams = { email: string };
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
@@ -21,13 +25,13 @@ export class UsersController {
   }
 
   @Get()
-  findAll() {
-    return this.usersService.findAll();
+  findOne(@Body() body: FindOneBodyParams) {
+    return this.usersService.findOne(body.email);
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.usersService.findOne(id);
+  @Get('all')
+  findAll() {
+    return this.usersService.findAll();
   }
 
   @Patch(':id')
@@ -38,5 +42,11 @@ export class UsersController {
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.usersService.remove(id);
+  }
+
+  @UseGuards(AuthGuard('local'))
+  @Post('login')
+  async login(@Request() req) {
+    return req.user;
   }
 }
